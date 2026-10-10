@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HTMLファイルビューア</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;background:#f4f6fa;color:#1d2734}header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;background:#fff;border-bottom:1px solid #dce1e9}h1{font-size:16px;margin:0 auto 0 0}.pick{display:inline-flex;align-items:center;border-radius:9px;padding:10px 14px;background:#2563eb;color:white;cursor:pointer;font-size:14px;font-weight:600}input{position:absolute;width:1px;height:1px;opacity:0}button{border:1px solid #cbd5e1;border-radius:9px;padding:9px 12px;background:white;color:#1d2734;font-size:14px}button:disabled{opacity:.45}#status{padding:8px 16px;font-size:12px;color:#566276;overflow-wrap:anywhere}iframe{display:block;width:100%;height:calc(100dvh - 110px);border:0;background:#fff}#empty{height:calc(100dvh - 110px);display:grid;place-items:center;color:#64748b;text-align:center;padding:24px}body.loaded #empty{display:none}body:not(.loaded) iframe{display:none}
+</style>
+</head>
+<body>
+<header><h1>HTMLビューア</h1><label class="pick" for="file">HTMLを選択</label><input id="file" type="file" accept=".html,.htm,text/html"><button id="fullscreen" disabled>表示のみ</button></header>
+<div id="status">HTMLファイルを選択してください（端末内で処理します）</div>
+<div id="empty">HTMLファイルを選ぶと、ここにページが表示されます。</div>
+<iframe id="preview" title="HTMLプレビュー" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-downloads"></iframe>
+<script>
+const input=document.getElementById('file');const preview=document.getElementById('preview');const status=document.getElementById('status');const fullscreen=document.getElementById('fullscreen');
+input.addEventListener('change',async()=>{const f=input.files&&input.files[0];if(!f)return;try{const html=await f.text();preview.srcdoc=html;document.body.classList.add('loaded');status.textContent=f.name+' · '+(f.size/1024).toFixed(1)+' KB（外部ファイルへの相対参照は読み込めないことがあります）';fullscreen.disabled=false;}catch(e){status.textContent='読み込みに失敗しました: '+e.message;}});
+fullscreen.addEventListener('click',()=>{if(preview.requestFullscreen){preview.requestFullscreen().catch(()=>{status.textContent='このブラウザでは全画面表示ができません';});}else{status.textContent='このブラウザではiframeの全画面表示に対応していません';}});
+</script>
+</body>
+</html>
